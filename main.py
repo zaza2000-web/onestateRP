@@ -28,7 +28,7 @@ def is_ldplayer_active():
     active_window = gw.getActiveWindow()
     return active_window is not None and "LDPlayer" in active_window.title
 def get_report():
-    report_position_x,report_position_y = 1241,62
+    report_position_x,report_position_y = 1234,20
     target_position_x,target_position_y = 423,289
     get_report_position_x,get_report_position_y = 1289,289
     time.sleep(0.1)
