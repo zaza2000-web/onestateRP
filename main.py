@@ -33,7 +33,7 @@ def get_report():
     get_report_position_x,get_report_position_y = 1289,289
     time.sleep(0.1)
     pyautogui.click(report_position_x,report_position_y)
-    time.sleep(0.1)
+    time.sleep(0.3)
     pyautogui.click(target_position_x,target_position_y)
     time.sleep(0.1)
     pyautogui.click(get_report_position_x,get_report_position_y)
