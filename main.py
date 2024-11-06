@@ -8,17 +8,15 @@ print("Запуск начнется через 5 секунд")
 time.sleep(5)
 
 paused = False
+max_reports = 3
 
 def go_to_fraction():
     time.sleep(0.5)
-    menu_x, menu_y = 1844, 56
-    pyautogui.click(menu_x, menu_y)
+    pyautogui.click(1844, 56)
     time.sleep(0.5)
-    fraction_x, fraction_y = 1760, 201
-    pyautogui.click(fraction_x, fraction_y)
+    pyautogui.click(1760, 201)
     time.sleep(0.5)
-    player_list_x, player_list_y = 151, 582
-    pyautogui.click(player_list_x, player_list_y)
+    pyautogui.click(151, 582)
 
 def take_position():
     time.sleep(1)
@@ -27,19 +25,34 @@ def take_position():
 def is_ldplayer_active():
     active_window = gw.getActiveWindow()
     return active_window is not None and "LDPlayer" in active_window.title
+
 def get_report():
-    report_position_x,report_position_y = 1234,20
-    target_position_x,target_position_y = 423,289
-    get_report_position_x,get_report_position_y = 1289,289
     time.sleep(0.1)
-    pyautogui.click(report_position_x,report_position_y)
+    pyautogui.click(1234, 20)
     time.sleep(0.3)
-    pyautogui.click(target_position_x,target_position_y)
+    pyautogui.click(423, 289)
     time.sleep(0.1)
-    pyautogui.click(get_report_position_x,get_report_position_y)
+    pyautogui.click(1289, 289)
 
+empty_interface_region = pyautogui.locateOnScreen("./img/empty_interface.jpg", confidence=0.8)
+if empty_interface_region is None:
+    print("Не удалось обнаружить пустой интерфейс. Проверьте путь к файлу.")
+    exit(1)
 
+def find_reports():
+    reports = list(pyautogui.locateAllOnScreen('./img/report_icon.jpg', region=empty_interface_region, confidence=0.8))
+    return reports
 
+def check_and_get_report(report_location):
+    pyautogui.click(report_location)
+    time.sleep(0.3)
+    get_report_button = pyautogui.locateOnScreen('./img/get_report.jpg', confidence=0.8)
+    if get_report_button:
+        pyautogui.click(get_report_button)
+        time.sleep(0.5)
+        return True
+    else:
+        return False
 
 if is_ldplayer_active():
     while True:
@@ -59,9 +72,25 @@ if is_ldplayer_active():
         elif keyboard.is_pressed("f"):
             while keyboard.is_pressed("f"):
                 go_to_fraction()
+
         elif keyboard.is_pressed("o"):
             while keyboard.is_pressed("o"):
                 take_position()
+
         elif keyboard.is_pressed("c"):
-            while keyboard.is_pressed("c"):
-                get_report()
+            taken_reports = 0
+            reports = find_reports()
+            if reports:
+                for report in reports:
+                    if check_and_get_report(report):
+                        print("Репорт взят.")
+                        taken_reports += 1
+                        if taken_reports >= max_reports:
+                            print(f"Максимум {max_reports} репортов взято.")
+                            break
+                    else:
+                        print("Репорт уже занят другим игроком.")
+            else:
+                print("Репорты не найдены.")
+            
+            time.sleep(1)
