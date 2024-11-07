@@ -34,25 +34,7 @@ def get_report():
     time.sleep(0.1)
     pyautogui.click(1289, 289)
 
-empty_interface_region = pyautogui.locateOnScreen("./img/empty_interface.jpg", confidence=0.8)
-if empty_interface_region is None:
-    print("Не удалось обнаружить пустой интерфейс. Проверьте путь к файлу.")
-    exit(1)
 
-def find_reports():
-    reports = list(pyautogui.locateAllOnScreen('./img/report_icon.jpg', region=empty_interface_region, confidence=0.8))
-    return reports
-
-def check_and_get_report(report_location):
-    pyautogui.click(report_location)
-    time.sleep(0.3)
-    get_report_button = pyautogui.locateOnScreen('./img/get_report.jpg', confidence=0.8)
-    if get_report_button:
-        pyautogui.click(get_report_button)
-        time.sleep(0.5)
-        return True
-    else:
-        return False
 
 if is_ldplayer_active():
     while True:
@@ -78,19 +60,8 @@ if is_ldplayer_active():
                 take_position()
 
         elif keyboard.is_pressed("c"):
-            taken_reports = 0
-            reports = find_reports()
-            if reports:
-                for report in reports:
-                    if check_and_get_report(report):
-                        print("Репорт взят.")
-                        taken_reports += 1
-                        if taken_reports >= max_reports:
-                            print(f"Максимум {max_reports} репортов взято.")
-                            break
-                    else:
-                        print("Репорт уже занят другим игроком.")
-            else:
-                print("Репорты не найдены.")
-            
-            time.sleep(1)
+
+            while keyboard.is_pressed("c"):
+                get_report()
+           
+        
